@@ -1,3 +1,4 @@
+import 'package:ai4lassa/widgets/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
@@ -57,6 +58,7 @@ class _MyAppState extends State<MyApp> {
         ),
         home: _showSplash ? const SplashScreen() : const HomeScreen(),
         debugShowCheckedModeBanner: false,
+        routes: {'/settings': (context) => SettingsScreen()},
       ),
     );
   }

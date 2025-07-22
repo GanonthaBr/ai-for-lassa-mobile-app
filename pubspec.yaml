@@ -27,7 +27,13 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
+
 dependencies:
+  url_launcher: ^6.2.2
+  share_plus: ^7.2.1
+  permission_handler: ^11.1.0
+  local_auth: ^2.1.7
+  connectivity_plus: ^5.0.2
   flutter:
     sdk: flutter
 
