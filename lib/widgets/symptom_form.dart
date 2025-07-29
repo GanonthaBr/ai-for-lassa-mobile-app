@@ -78,101 +78,29 @@ class _SymptomFormState extends State<SymptomForm>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section Header with Count
+        // Section Header
         Padding(
-          padding: const EdgeInsets.only(bottom: AppConstants.defaultPadding),
-          child: Row(
-            children: [
-              Text('Symptoms', style: AppConstants.subtitleStyle),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppConstants.smallPadding,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: selectedCount > 0
-                      ? AppConstants.warningColor.withOpacity(0.1)
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: selectedCount > 0
-                        ? AppConstants.warningColor
-                        : Colors.grey[400]!,
-                  ),
-                ),
-                child: Text(
-                  '$selectedCount/4 selected',
-                  style: AppConstants.captionStyle.copyWith(
-                    color: selectedCount > 0
-                        ? AppConstants.warningColor
-                        : Colors.grey[600],
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
+          padding: EdgeInsets.only(
+            bottom: AppConstants.getResponsivePadding(context),
+          ),
+          child: Text(
+            'Symptoms',
+            style: AppConstants.getResponsiveSubtitleStyle(context),
           ),
         ),
 
         // Symptoms Container
         Container(
-          padding: const EdgeInsets.all(AppConstants.defaultPadding),
+          padding: EdgeInsets.all(AppConstants.getResponsivePadding(context)),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(AppConstants.buttonRadius),
-            border: Border.all(
-              color: selectedCount > 0
-                  ? AppConstants.warningColor.withOpacity(0.3)
-                  : Colors.grey[300]!,
-              width: selectedCount > 0 ? 2 : 1,
+            color: Colors.grey[50],
+            borderRadius: BorderRadius.circular(
+              AppConstants.getResponsiveButtonRadius(context),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: selectedCount > 0
-                    ? AppConstants.warningColor.withOpacity(0.1)
-                    : Colors.grey.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            border: Border.all(color: Colors.grey[300]!),
           ),
           child: Column(
             children: [
-              // Quick Assessment Text
-              if (selectedCount > 0) ...[
-                Container(
-                  padding: const EdgeInsets.all(AppConstants.smallPadding),
-                  decoration: BoxDecoration(
-                    color: AppConstants.warningColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.warning_amber,
-                        color: AppConstants.warningColor,
-                        size: 16,
-                      ),
-                      const SizedBox(width: AppConstants.smallPadding),
-                      Expanded(
-                        child: Text(
-                          selectedCount >= 3
-                              ? 'Multiple symptoms detected - urgent assessment recommended'
-                              : 'Symptoms reported - assessment recommended',
-                          style: AppConstants.captionStyle.copyWith(
-                            color: AppConstants.warningColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppConstants.defaultPadding),
-              ],
-
               // Fever Switch
               _buildSymptomSwitch(
                 title: 'Fever',
@@ -188,7 +116,7 @@ class _SymptomFormState extends State<SymptomForm>
                 },
               ),
 
-              const SizedBox(height: AppConstants.defaultPadding),
+              SizedBox(height: AppConstants.getResponsivePadding(context)),
 
               // Bleeding Switch
               _buildSymptomSwitch(
@@ -205,7 +133,7 @@ class _SymptomFormState extends State<SymptomForm>
                 },
               ),
 
-              const SizedBox(height: AppConstants.defaultPadding),
+              SizedBox(height: AppConstants.getResponsivePadding(context)),
 
               // Headache Switch
               _buildSymptomSwitch(
@@ -222,7 +150,7 @@ class _SymptomFormState extends State<SymptomForm>
                 },
               ),
 
-              const SizedBox(height: AppConstants.defaultPadding),
+              SizedBox(height: AppConstants.getResponsivePadding(context)),
 
               // Vomiting Switch
               _buildSymptomSwitch(
@@ -239,15 +167,17 @@ class _SymptomFormState extends State<SymptomForm>
                 },
               ),
 
-              const SizedBox(height: AppConstants.defaultPadding),
+              SizedBox(height: AppConstants.getResponsivePadding(context)),
 
               // Temperature Input
               Container(
-                padding: const EdgeInsets.all(AppConstants.defaultPadding),
+                padding: EdgeInsets.all(
+                  AppConstants.getResponsivePadding(context),
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(
-                    AppConstants.buttonRadius,
+                    AppConstants.getResponsiveButtonRadius(context),
                   ),
                   border: Border.all(color: Colors.grey[300]!),
                 ),
@@ -257,8 +187,8 @@ class _SymptomFormState extends State<SymptomForm>
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(
-                            AppConstants.smallPadding,
+                          padding: EdgeInsets.all(
+                            AppConstants.getResponsiveSmallPadding(context),
                           ),
                           decoration: BoxDecoration(
                             color: AppConstants.warningColor,
@@ -270,31 +200,38 @@ class _SymptomFormState extends State<SymptomForm>
                             size: 20,
                           ),
                         ),
-                        const SizedBox(width: AppConstants.defaultPadding),
+                        SizedBox(
+                          width: AppConstants.getResponsivePadding(context),
+                        ),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'Body Temperature',
-                                style: AppConstants.bodyStyle.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
+                                style:
+                                    AppConstants.getResponsiveBodyStyle(
+                                      context,
+                                    ).copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87,
+                                    ),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 'Enter your body temperature in °C',
-                                style: AppConstants.captionStyle.copyWith(
-                                  color: Colors.black54,
-                                ),
+                                style: AppConstants.getResponsiveCaptionStyle(
+                                  context,
+                                ).copyWith(color: Colors.black54),
                               ),
                             ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppConstants.defaultPadding),
+                    SizedBox(
+                      height: AppConstants.getResponsivePadding(context),
+                    ),
                     Row(
                       children: [
                         Expanded(
@@ -312,42 +249,20 @@ class _SymptomFormState extends State<SymptomForm>
                             },
                           ),
                         ),
-                        const SizedBox(width: AppConstants.defaultPadding),
+                        SizedBox(
+                          width: AppConstants.getResponsivePadding(context),
+                        ),
                         Text(
                           '${_temperature.toStringAsFixed(1)}°C',
-                          style: AppConstants.bodyStyle.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppConstants.warningColor,
-                          ),
+                          style: AppConstants.getResponsiveBodyStyle(context)
+                              .copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: AppConstants.warningColor,
+                              ),
                         ),
                       ],
                     ),
                   ],
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        // Additional Information
-        const SizedBox(height: AppConstants.defaultPadding),
-        Container(
-          padding: const EdgeInsets.all(AppConstants.defaultPadding),
-          decoration: BoxDecoration(
-            color: Colors.blue[50],
-            borderRadius: BorderRadius.circular(AppConstants.buttonRadius),
-            border: Border.all(color: Colors.blue[200]!),
-          ),
-          child: Row(
-            children: [
-              Icon(Icons.info_outline, color: Colors.blue[700], size: 20),
-              const SizedBox(width: AppConstants.smallPadding),
-              Expanded(
-                child: Text(
-                  'Select all symptoms you are currently experiencing. Early symptoms may be mild and similar to other illnesses.',
-                  style: AppConstants.captionStyle.copyWith(
-                    color: Colors.blue[700],
-                  ),
                 ),
               ),
             ],

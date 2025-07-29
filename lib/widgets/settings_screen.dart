@@ -272,7 +272,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildSettingsCard([
               _buildListTile(
                 title: 'Emergency Hotline',
-                subtitle: AppConstants.emergencyHotline,
+                subtitle: '08000000000',
                 icon: Icons.emergency,
                 onTap: () {
                   // TODO: Make emergency call
@@ -292,7 +292,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // ),
             ]),
 
-            const SizedBox(height: AppConstants.extraLargePadding),
+            const SizedBox(height: AppConstants.largePadding),
 
             // Reset Settings Button
             Center(
@@ -383,7 +383,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       title: Text(
         title,
         style: AppConstants.bodyStyle.copyWith(
-          color: textColor ?? AppConstants.textPrimary,
+          color: textColor ?? AppConstants.primaryColor,
         ),
       ),
       subtitle: Text(subtitle, style: AppConstants.captionStyle),
@@ -428,7 +428,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text('Data export feature coming soon'),
-        backgroundColor: AppConstants.infoColor,
+        backgroundColor: AppConstants.primaryColor,
       ),
     );
   }
@@ -465,8 +465,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _clearAllData() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(AppConstants.assessmentHistoryKey);
-    await prefs.remove(AppConstants.lastAssessmentKey);
+    // await prefs.remove(AppConstants.assessmentHistoryKey);
+    // await prefs.remove(AppConstants.lastAssessmentKey);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -488,7 +488,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               Text('Version: ${AppConstants.appVersion}'),
               const SizedBox(height: 8),
-              Text(AppConstants.appDescription),
+              Text('AI-powered Lassa fever detection and risk assessment'),
               const SizedBox(height: 16),
               Text('© 2025 AI4Lassa Team'),
             ],

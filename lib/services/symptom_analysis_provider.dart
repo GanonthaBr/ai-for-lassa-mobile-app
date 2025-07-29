@@ -84,6 +84,11 @@ class SymptomAnalysisProvider extends ChangeNotifier {
           duration: const Duration(seconds: 3),
         ),
       );
+      // Clear result after a delay to prevent repeated navigation
+      Future.delayed(const Duration(seconds: 1), () {
+        result = null;
+        notifyListeners();
+      });
     } catch (e) {
       isLoading = false;
       result = null;

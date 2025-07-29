@@ -101,22 +101,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 // Header Section with Stats
                                 _buildEnhancedHeaderSection(),
 
-                                const SizedBox(
-                                  height: AppConstants.largePadding,
+                                SizedBox(
+                                  height:
+                                      AppConstants.getResponsiveLargePadding(
+                                        context,
+                                      ),
                                 ),
 
                                 // Quick Stats
                                 _buildQuickStats(),
 
-                                const SizedBox(
-                                  height: AppConstants.largePadding,
+                                SizedBox(
+                                  height:
+                                      AppConstants.getResponsiveLargePadding(
+                                        context,
+                                      ),
                                 ),
 
                                 // Steps Indicator
                                 _buildStepsIndicator(provider),
 
-                                const SizedBox(
-                                  height: AppConstants.largePadding,
+                                SizedBox(
+                                  height:
+                                      AppConstants.getResponsiveLargePadding(
+                                        context,
+                                      ),
                                 ),
 
                                 // Symptom Form
@@ -137,15 +146,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   delay: 200,
                                 ),
 
-                                const SizedBox(
-                                  height: AppConstants.largePadding,
+                                SizedBox(
+                                  height:
+                                      AppConstants.getResponsiveLargePadding(
+                                        context,
+                                      ),
                                 ),
 
                                 // Submit Button
                                 _buildEnhancedSubmitButton(context, provider),
 
-                                const SizedBox(
-                                  height: AppConstants.largePadding,
+                                SizedBox(
+                                  height:
+                                      AppConstants.getResponsiveLargePadding(
+                                        context,
+                                      ),
                                 ),
 
                                 // // Button to show mock result for testing
@@ -172,15 +187,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   delay: 600,
                                 ),
 
-                                const SizedBox(
-                                  height: AppConstants.largePadding,
+                                SizedBox(
+                                  height:
+                                      AppConstants.getResponsiveLargePadding(
+                                        context,
+                                      ),
                                 ),
 
                                 // Help Section
                                 _buildHelpSection(),
 
-                                const SizedBox(
-                                  height: AppConstants.extraLargePadding,
+                                SizedBox(
+                                  height:
+                                      AppConstants.getResponsiveLargePadding(
+                                        context,
+                                      ) *
+                                      2,
                                 ),
                               ],
                             ),
@@ -1087,7 +1109,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               const SizedBox(height: 16),
               _buildEmergencyContact(
                 'Emergency Hotline',
-                AppConstants.emergencyHotline,
+                '08000000000',
                 Icons.phone,
                 () {
                   // TODO: Make emergency call
