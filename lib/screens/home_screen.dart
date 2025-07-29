@@ -791,11 +791,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       bleeding: provider.bleeding ? 1 : 0,
       headache: provider.headache ? 1 : 0,
       vomiting: provider.vomiting ? 1 : 0,
-      temperature: provider.temperature.toDouble(),
+      temperature: provider.temperature,
     );
-
-    //log the symptom data
-    print(symptomData.toJson());
 
     return AnimatedContainer(
       duration: AppConstants.shortAnimation,
@@ -819,7 +816,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         onPressed: provider.isLoading
             ? null
             : () {
-                provider.submitData(context);
+                provider.submitData(
+                  context,
+                  fever: provider.fever,
+                  bleeding: provider.bleeding,
+                  headache: provider.headache,
+                  vomiting: provider.vomiting,
+                  temperature: provider.temperature,
+                );
               },
         style: ElevatedButton.styleFrom(
           backgroundColor: hasSymptoms

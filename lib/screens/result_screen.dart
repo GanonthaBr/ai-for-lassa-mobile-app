@@ -10,11 +10,25 @@ class ResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isHighRisk = result.risk.toLowerCase() == 'high';
-    final riskColor = isHighRisk
-        ? AppConstants.highRiskColor
-        : AppConstants.lowRiskColor;
-    final riskIcon = isHighRisk ? Icons.warning : Icons.check_circle;
-    final riskTitle = isHighRisk ? 'High Risk' : 'Low Risk';
+    final isMediumRisk = result.risk.toLowerCase() == 'medium';
+
+    Color riskColor;
+    IconData riskIcon;
+    String riskTitle;
+
+    if (isHighRisk) {
+      riskColor = AppConstants.highRiskColor;
+      riskIcon = Icons.warning;
+      riskTitle = 'High Risk';
+    } else if (isMediumRisk) {
+      riskColor = AppConstants.warningColor;
+      riskIcon = Icons.info;
+      riskTitle = 'Medium Risk';
+    } else {
+      riskColor = AppConstants.lowRiskColor;
+      riskIcon = Icons.check_circle;
+      riskTitle = 'Low Risk';
+    }
 
     return Scaffold(
       backgroundColor: Colors.grey[50], // More visible background
@@ -206,7 +220,9 @@ class ResultScreen extends StatelessWidget {
                     Text(
                       isHighRisk
                           ? 'Seek immediate medical attention. Contact healthcare provider as soon as possible. Do not delay treatment.'
-                          : 'Monitor your symptoms closely. Continue with normal activities but stay alert to any changes.',
+                          : isMediumRisk
+                          ? 'Monitor your symptoms closely and consider consulting a healthcare provider if symptoms persist or worsen.'
+                          : 'Continue monitoring your symptoms. Maintain normal activities but stay alert to any changes.',
                       style: AppConstants.getResponsiveBodyStyle(
                         context,
                       ).copyWith(color: Colors.black87, height: 1.4),

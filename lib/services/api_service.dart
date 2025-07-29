@@ -13,7 +13,7 @@ class ApiService {
 
   // TESTING: NGrok tunnel for development testing only
   static const String _testingNgrokUrl =
-      'https://your-ngrok-url.ngrok.io'; // Update this with your actual NGrok URL
+      'https://b33ed8f66dfe.ngrok-free.app'; // Updated with actual NGrok URL
 
   static String get _baseUrl =>
       _useNgrokForTesting ? _testingNgrokUrl : _productionIp;
@@ -24,6 +24,8 @@ class ApiService {
   // Submit symptom data and get prediction
   static Future<PredictionResult> submitSymptomData(SymptomData data) async {
     try {
+      print('Data: ${data.toJson()}');
+
       final response = await http
           .post(
             Uri.parse(_fullUrl),
@@ -33,17 +35,23 @@ class ApiService {
           .timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
+        print('Response: ${response.body}');
         final jsonResponse = jsonDecode(response.body);
         return PredictionResult.fromJson(jsonResponse);
+      } else if (response.statusCode == 404) {
+        throw ApiException('Service temporarily unavailable');
+      } else if (response.statusCode >= 500) {
+        throw ApiException('Server temporarily unavailable');
       } else {
-        throw ApiException('Server error: ${response.statusCode}');
+        throw ApiException('Service temporarily unavailable');
       }
     } on http.ClientException {
-      throw ApiException('Network error: Unable to connect to server');
+      throw ApiException('Network connection error');
     } on FormatException {
-      throw ApiException('Invalid response format from server');
+      throw ApiException('Invalid response format');
     } catch (e) {
-      throw ApiException('Unexpected error: $e');
+      print('Error: $e');
+      throw ApiException('Unexpected error occurred');
     }
   }
 
@@ -94,15 +102,19 @@ class ApiService {
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = jsonDecode(response.body);
         return jsonList.map((json) => StatisticsData.fromJson(json)).toList();
+      } else if (response.statusCode == 404) {
+        throw ApiException('Data service temporarily unavailable');
+      } else if (response.statusCode >= 500) {
+        throw ApiException('Data server temporarily unavailable');
       } else {
-        throw ApiException('Server error:  {response.statusCode}');
+        throw ApiException('Data service temporarily unavailable');
       }
     } on http.ClientException {
-      throw ApiException('Network error: Unable to connect to server');
+      throw ApiException('Network connection error');
     } on FormatException {
-      throw ApiException('Invalid response format from server');
+      throw ApiException('Invalid response format');
     } catch (e) {
-      throw ApiException('Unexpected error: $e');
+      throw ApiException('Unexpected error occurred');
     }
   }
 

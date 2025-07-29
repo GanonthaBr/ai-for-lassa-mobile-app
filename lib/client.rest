@@ -1,0 +1,82 @@
+### Test Prediction API Endpoint - Normal Case
+POST https://b33ed8f66dfe.ngrok-free.app/predict
+Content-Type: application/json
+
+{
+  "fever": 0,
+  "bleeding": 0,
+  "headache": 0,
+  "vomiting": 1,
+  "temperature": 48.8
+}
+
+
+
+###
+
+### Test Prediction API - High Risk Case
+POST https://b33ed8f66dfe.ngrok-free.app/predict
+Content-Type: application/json
+
+{
+  "fever": 1,
+  "bleeding": 1,
+  "headache": 1,
+  "vomiting": 1,
+  "temperature": 39.2
+}
+
+###
+
+### Test Prediction API - Low Risk Case
+POST https://b33ed8f66dfe.ngrok-free.app/predict
+Content-Type: application/json
+
+{
+  "fever": 0,
+  "bleeding": 0,
+  "headache": 0,
+  "vomiting": 0,
+  "temperature": 36.8
+}
+
+###
+
+### Test Prediction API - Moderate Risk Case
+POST https://b33ed8f66dfe.ngrok-free.app/predict
+Content-Type: application/json
+
+{
+  "fever": 1,
+  "bleeding": 0,
+  "headache": 1,
+  "vomiting": 0,
+  "temperature": 38.5
+}
+
+###
+
+### Test Statistics API - Get All Data
+GET https://b33ed8f66dfe.ngrok-free.app/statistics
+
+###
+
+### Test Statistics API - Filter by State
+GET https://b33ed8f66dfe.ngrok-free.app/statistics?state=Lagos
+
+###
+
+### Test Statistics API - Filter by State and Interval
+GET https://b33ed8f66dfe.ngrok-free.app/statistics?state=Lagos&interval=month
+
+###
+
+### Test Statistics API - Filter by Date Range
+GET https://b33ed8f66dfe.ngrok-free.app/statistics?start_date=2023-01-01&end_date=2023-12-31
+
+###
+
+### Test Statistics API - All Parameters
+GET https://b33ed8f66dfe.ngrok-free.app/statistics?state=Lagos&interval=month&start_date=2023-01-01&end_date=2023-12-31
+
+###
