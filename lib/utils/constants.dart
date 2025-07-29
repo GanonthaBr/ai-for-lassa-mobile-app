@@ -16,17 +16,16 @@ class AppConstants {
   static const double minHumidity = 0.0;
   static const double maxHumidity = 100.0;
   static const double defaultHumidity = 50.0;
-  static const double optimalHumidityMin = 40.0;
-  static const double optimalHumidityMax = 70.0;
 
-  static const double minTemperature = 15.0;
-  static const double maxTemperature = 50.0;
-  static const double defaultTemperature = 25.0;
+  // Temperature Ranges (for body temperature in symptoms)
+  static const double minTemperature = 35.0;
+  static const double maxTemperature = 42.0;
+  static const double defaultTemperature = 37.0;
   static const double feverThreshold = 37.5;
   static const double criticalTempThreshold = 40.0;
 
   // UI Constants
-  static const double defaultPadding = 12.0;
+  static const double defaultPadding = 16.0;
   static const double smallPadding = 8.0;
   static const double largePadding = 24.0;
   static const double extraLargePadding = 32.0;
@@ -80,17 +79,15 @@ class AppConstants {
   );
 
   static const TextStyle titleStyle = TextStyle(
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: FontWeight.bold,
-    color: textPrimary,
-    letterSpacing: -0.25,
+    color: Colors.black87,
   );
 
   static const TextStyle subtitleStyle = TextStyle(
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: FontWeight.w600,
-    color: textSecondary,
-    letterSpacing: 0,
+    color: Colors.black54,
   );
 
   static const TextStyle headlineStyle = TextStyle(
@@ -101,10 +98,8 @@ class AppConstants {
   );
 
   static const TextStyle bodyStyle = TextStyle(
-    fontSize: 12,
-    fontWeight: FontWeight.normal,
-    color: textPrimary,
-    letterSpacing: 0.15,
+    fontSize: 18,
+    color: Colors.black87,
   );
 
   static const TextStyle bodyBoldStyle = TextStyle(
@@ -115,10 +110,8 @@ class AppConstants {
   );
 
   static const TextStyle captionStyle = TextStyle(
-    fontSize: 10,
-    fontWeight: FontWeight.normal,
-    color: textSecondary,
-    letterSpacing: 0.25,
+    fontSize: 16,
+    color: Colors.black54,
   );
 
   static const TextStyle labelStyle = TextStyle(
@@ -360,10 +353,6 @@ class AppConstants {
     return temperature >= minTemperature && temperature <= maxTemperature;
   }
 
-  static bool isValidHumidity(double humidity) {
-    return humidity >= minHumidity && humidity <= maxHumidity;
-  }
-
   static bool isFeverTemperature(double temperature) {
     return temperature >= feverThreshold;
   }
@@ -377,13 +366,5 @@ class AppConstants {
     if (temperature >= feverThreshold) return 'Fever';
     if (temperature < 35.0) return 'Low';
     return 'Normal';
-  }
-
-  static String getHumidityStatus(double humidity) {
-    if (humidity < 20) return 'Very Dry';
-    if (humidity < optimalHumidityMin) return 'Dry';
-    if (humidity <= optimalHumidityMax) return 'Optimal';
-    if (humidity <= 80) return 'Humid';
-    return 'Very Humid';
   }
 }

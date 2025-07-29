@@ -280,16 +280,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 trailing: const Icon(Icons.phone),
                 textColor: AppConstants.errorColor,
               ),
-              const Divider(height: 1),
-              _buildListTile(
-                title: 'Nearest Health Facility',
-                subtitle: 'Find nearby medical centers',
-                icon: Icons.local_hospital,
-                onTap: () {
-                  // TODO: Open maps to nearest facility
-                },
-                trailing: const Icon(Icons.location_on),
-              ),
+              // const Divider(height: 1),
+              // _buildListTile(
+              //   title: 'Nearest Health Facility',
+              //   subtitle: 'Find nearby medical centers',
+              //   icon: Icons.local_hospital,
+              //   onTap: () {
+              //     // TODO: Open maps to nearest facility
+              //   },
+              //   trailing: const Icon(Icons.location_on),
+              // ),
             ]),
 
             const SizedBox(height: AppConstants.extraLargePadding),

@@ -11,7 +11,6 @@ class SymptomAnalysisProvider extends ChangeNotifier {
   bool bleeding = false;
   bool headache = false;
   bool vomiting = false;
-  double humidity = AppConstants.defaultHumidity;
   double temperature = AppConstants.defaultTemperature;
 
   // UI state
@@ -26,11 +25,6 @@ class SymptomAnalysisProvider extends ChangeNotifier {
 
   void setBleeding(bool value) {
     bleeding = value;
-    notifyListeners();
-  }
-
-  void setHumidity(double value) {
-    humidity = value;
     notifyListeners();
   }
 
@@ -49,6 +43,13 @@ class SymptomAnalysisProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setMockResult() {
+    result = PredictionResult(prediction: 1, risk: 'High');
+    errorMessage = null;
+    isLoading = false;
+    notifyListeners();
+  }
+
   Future<void> submitData(BuildContext context) async {
     isLoading = true;
     result = null;
@@ -63,17 +64,11 @@ class SymptomAnalysisProvider extends ChangeNotifier {
     );
 
     try {
-      final symptomData = SymptomData(
-        fever: fever ? 1 : 0,
-        bleeding: bleeding ? 1 : 0,
-        headache: headache ? 1 : 0,
-        vomiting: vomiting ? 1 : 0,
-        temperature: temperature,
-        humidity: humidity,
-      );
-      final res = await ApiService.submitSymptomData(symptomData);
+      // Simulate network delay
+      await Future.delayed(const Duration(seconds: 2));
+      // Set mock result
+      result = PredictionResult(prediction: 35, risk: 'High');
       isLoading = false;
-      result = res;
       errorMessage = null;
       notifyListeners();
       // Dismiss loading screen
@@ -82,28 +77,11 @@ class SymptomAnalysisProvider extends ChangeNotifier {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text(
-            'Analysis completed successfully!',
+            'Analysis completed successfully! (Mock)',
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: AppConstants.successColor,
           duration: const Duration(seconds: 3),
-        ),
-      );
-    } on ApiException catch (e) {
-      isLoading = false;
-      result = null;
-      errorMessage = e.message;
-      notifyListeners();
-      // Dismiss loading screen
-      Navigator.of(context, rootNavigator: true).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Error: ${e.message}',
-            style: const TextStyle(color: Colors.white),
-          ),
-          backgroundColor: AppConstants.errorColor,
-          duration: const Duration(seconds: 5),
         ),
       );
     } catch (e) {

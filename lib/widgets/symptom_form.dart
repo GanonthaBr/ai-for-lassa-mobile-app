@@ -6,10 +6,12 @@ class SymptomForm extends StatefulWidget {
   final bool initialBleeding;
   final bool initialHeadache;
   final bool initialVomiting;
+  final double initialTemperature;
   final Function(bool) onFeverChanged;
   final Function(bool) onBleedingChanged;
   final Function(bool) onHeadacheChanged;
   final Function(bool) onVomitingChanged;
+  final Function(double) onTemperatureChanged;
 
   const SymptomForm({
     super.key,
@@ -17,10 +19,12 @@ class SymptomForm extends StatefulWidget {
     this.initialBleeding = false,
     this.initialHeadache = false,
     this.initialVomiting = false,
+    this.initialTemperature = 37.0,
     required this.onFeverChanged,
     required this.onBleedingChanged,
     required this.onHeadacheChanged,
     required this.onVomitingChanged,
+    required this.onTemperatureChanged,
   });
 
   @override
@@ -33,6 +37,7 @@ class _SymptomFormState extends State<SymptomForm>
   late bool _bleeding;
   late bool _headache;
   late bool _vomiting;
+  late double _temperature;
 
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -44,6 +49,7 @@ class _SymptomFormState extends State<SymptomForm>
     _bleeding = widget.initialBleeding;
     _headache = widget.initialHeadache;
     _vomiting = widget.initialVomiting;
+    _temperature = widget.initialTemperature;
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -167,82 +173,157 @@ class _SymptomFormState extends State<SymptomForm>
                 const SizedBox(height: AppConstants.defaultPadding),
               ],
 
-              // Fever Checkbox
-              _buildEnhancedSymptomCheckbox(
+              // Fever Switch
+              _buildSymptomSwitch(
                 title: 'Fever',
-                description: 'Body temperature above 37.5°C (99.5°F)',
-                detailText: 'High fever is a key symptom of Lassa fever',
+                description: 'Elevated body temperature',
                 value: _fever,
                 icon: Icons.thermostat,
                 color: AppConstants.warningColor,
-                severity: SymptomSeverity.high,
                 onChanged: (value) {
                   setState(() {
                     _fever = value;
                   });
                   widget.onFeverChanged(value);
-                  if (value) _animateSelection();
                 },
               ),
 
               const SizedBox(height: AppConstants.defaultPadding),
 
-              // Bleeding Checkbox
-              _buildEnhancedSymptomCheckbox(
+              // Bleeding Switch
+              _buildSymptomSwitch(
                 title: 'Bleeding',
                 description: 'Unusual bleeding or hemorrhage',
-                detailText: 'May include nosebleeds, gum bleeding, or bruising',
                 value: _bleeding,
                 icon: Icons.bloodtype,
                 color: AppConstants.errorColor,
-                severity: SymptomSeverity.critical,
                 onChanged: (value) {
                   setState(() {
                     _bleeding = value;
                   });
                   widget.onBleedingChanged(value);
-                  if (value) _animateSelection();
                 },
               ),
 
               const SizedBox(height: AppConstants.defaultPadding),
 
-              // Headache Checkbox
-              _buildEnhancedSymptomCheckbox(
+              // Headache Switch
+              _buildSymptomSwitch(
                 title: 'Headache',
                 description: 'Persistent or severe headache',
-                detailText: 'Often described as intense and throbbing',
                 value: _headache,
                 icon: Icons.psychology,
                 color: Colors.deepPurple,
-                severity: SymptomSeverity.medium,
                 onChanged: (value) {
                   setState(() {
                     _headache = value;
                   });
                   widget.onHeadacheChanged(value);
-                  if (value) _animateSelection();
                 },
               ),
 
               const SizedBox(height: AppConstants.defaultPadding),
 
-              // Vomiting Checkbox
-              _buildEnhancedSymptomCheckbox(
+              // Vomiting Switch
+              _buildSymptomSwitch(
                 title: 'Vomiting',
-                description: 'Nausea, vomiting, or stomach upset',
-                detailText: 'May be accompanied by loss of appetite',
+                description: 'Nausea or vomiting',
                 value: _vomiting,
                 icon: Icons.sick,
                 color: Colors.teal,
-                severity: SymptomSeverity.medium,
                 onChanged: (value) {
                   setState(() {
                     _vomiting = value;
                   });
                   widget.onVomitingChanged(value);
-                  if (value) _animateSelection();
                 },
+              ),
+
+              const SizedBox(height: AppConstants.defaultPadding),
+
+              // Temperature Input
+              Container(
+                padding: const EdgeInsets.all(AppConstants.defaultPadding),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(
+                    AppConstants.buttonRadius,
+                  ),
+                  border: Border.all(color: Colors.grey[300]!),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(
+                            AppConstants.smallPadding,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppConstants.warningColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.thermostat,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: AppConstants.defaultPadding),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Body Temperature',
+                                style: AppConstants.bodyStyle.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Enter your body temperature in °C',
+                                style: AppConstants.captionStyle.copyWith(
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppConstants.defaultPadding),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Slider(
+                            value: _temperature,
+                            min: 35.0,
+                            max: 42.0,
+                            divisions: 70,
+                            label: '${_temperature.toStringAsFixed(1)}°C',
+                            onChanged: (value) {
+                              setState(() {
+                                _temperature = value;
+                              });
+                              widget.onTemperatureChanged(value);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: AppConstants.defaultPadding),
+                        Text(
+                          '${_temperature.toStringAsFixed(1)}°C',
+                          style: AppConstants.bodyStyle.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: AppConstants.warningColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -276,158 +357,64 @@ class _SymptomFormState extends State<SymptomForm>
     );
   }
 
-  Widget _buildEnhancedSymptomCheckbox({
+  Widget _buildSymptomSwitch({
     required String title,
     required String description,
-    required String detailText,
     required bool value,
     required IconData icon,
     required Color color,
-    required SymptomSeverity severity,
     required ValueChanged<bool> onChanged,
   }) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+    return Container(
       padding: const EdgeInsets.all(AppConstants.defaultPadding),
       decoration: BoxDecoration(
-        color: value ? color.withOpacity(0.1) : Colors.grey[50],
+        color: value ? color.withOpacity(0.1) : Colors.white,
         borderRadius: BorderRadius.circular(AppConstants.buttonRadius),
         border: Border.all(
           color: value ? color : Colors.grey[300]!,
           width: value ? 2 : 1,
         ),
       ),
-      child: Column(
+      child: Row(
         children: [
-          Row(
-            children: [
-              // Icon with severity indicator
-              Stack(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(
-                      AppConstants.smallPadding + 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: value ? color : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      icon,
-                      color: value ? Colors.white : Colors.grey[600],
-                      size: 24,
-                    ),
-                  ),
-                  if (severity == SymptomSeverity.critical && value)
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: AppConstants.errorColor,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 1),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-
-              const SizedBox(width: AppConstants.defaultPadding),
-
-              // Text content
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          title,
-                          style: AppConstants.bodyStyle.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: value ? color : Colors.black87,
-                          ),
-                        ),
-                        if (severity == SymptomSeverity.critical) ...[
-                          const SizedBox(width: AppConstants.smallPadding),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppConstants.errorColor,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              'CRITICAL',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      description,
-                      style: AppConstants.captionStyle.copyWith(
-                        color: value ? color.withOpacity(0.8) : Colors.black54,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Checkbox
-              Transform.scale(
-                scale: value ? 1.1 : 1.0,
-                child: Checkbox(
-                  value: value,
-                  onChanged: (bool? newValue) => onChanged(newValue ?? false),
-                  activeColor: color,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-              ),
-            ],
-          ),
-
-          // Additional details when selected
-          if (value) ...[
-            const SizedBox(height: AppConstants.smallPadding),
-            Container(
-              padding: const EdgeInsets.all(AppConstants.smallPadding),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: color.withOpacity(0.3)),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.lightbulb_outline, color: color, size: 16),
-                  const SizedBox(width: AppConstants.smallPadding),
-                  Expanded(
-                    child: Text(
-                      detailText,
-                      style: AppConstants.captionStyle.copyWith(
-                        color: color.withOpacity(0.8),
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+          // Icon
+          Container(
+            padding: const EdgeInsets.all(AppConstants.smallPadding),
+            decoration: BoxDecoration(
+              color: value ? color : Colors.grey[300],
+              borderRadius: BorderRadius.circular(8),
             ),
-          ],
+            child: Icon(
+              icon,
+              color: value ? Colors.white : Colors.grey[600],
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: AppConstants.defaultPadding),
+          // Text content
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppConstants.bodyStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: value ? color : Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  description,
+                  style: AppConstants.captionStyle.copyWith(
+                    color: value ? color.withOpacity(0.8) : Colors.black54,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Switch
+          Switch(value: value, onChanged: onChanged, activeColor: color),
         ],
       ),
     );

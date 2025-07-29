@@ -4,7 +4,6 @@ class SymptomData {
   final int headache;
   final int vomiting;
   final double temperature;
-  final double humidity;
 
   SymptomData({
     required this.fever,
@@ -12,7 +11,6 @@ class SymptomData {
     required this.headache,
     required this.vomiting,
     required this.temperature,
-    required this.humidity,
   });
 
   Map<String, dynamic> toJson() {
@@ -22,7 +20,6 @@ class SymptomData {
       'headache': headache,
       'vomiting': vomiting,
       'temperature': temperature,
-      'humidity': humidity,
     };
   }
 }

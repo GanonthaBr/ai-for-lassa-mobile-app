@@ -1,9 +1,9 @@
+import 'package:ai4lassa/models/symptom_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/symptom_analysis_provider.dart';
 import '../utils/constants.dart';
 import '../widgets/symptom_form.dart';
-import '../widgets/environmental_sliders.dart';
 import '../widgets/result_display.dart';
 import 'data_browser_screen.dart';
 import 'about_screen.dart';
@@ -126,36 +126,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     initialBleeding: provider.bleeding,
                                     initialHeadache: provider.headache,
                                     initialVomiting: provider.vomiting,
+                                    initialTemperature: provider.temperature,
                                     onFeverChanged: provider.setFever,
                                     onBleedingChanged: provider.setBleeding,
                                     onHeadacheChanged: provider.setHeadache,
                                     onVomitingChanged: provider.setVomiting,
-                                  ),
-                                  delay: 200,
-                                ),
-
-                                const SizedBox(
-                                  height: AppConstants.largePadding,
-                                ),
-
-                                // Environmental Sliders
-                                _buildAnimatedSection(
-                                  child: EnvironmentalSliders(
-                                    initialHumidity: provider.humidity,
-                                    initialTemperature: provider.temperature,
-                                    onHumidityChanged: provider.setHumidity,
                                     onTemperatureChanged:
                                         provider.setTemperature,
                                   ),
-                                  delay: 400,
+                                  delay: 200,
                                 ),
-
-                                const SizedBox(
-                                  height: AppConstants.largePadding,
-                                ),
-
-                                // Data Summary
-                                _buildDataSummary(provider),
 
                                 const SizedBox(
                                   height: AppConstants.largePadding,
@@ -167,6 +147,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 const SizedBox(
                                   height: AppConstants.largePadding,
                                 ),
+
+                                // // Button to show mock result for testing
+                                // Padding(
+                                //   padding: const EdgeInsets.only(bottom: 12.0),
+                                //   child: ElevatedButton.icon(
+                                //     onPressed: provider.setMockResult,
+                                //     icon: const Icon(Icons.bug_report),
+                                //     label: const Text('Show Sample Result'),
+                                //     style: ElevatedButton.styleFrom(
+                                //       backgroundColor: Colors.deepPurple,
+                                //       foregroundColor: Colors.white,
+                                //     ),
+                                //   ),
+                                // ),
 
                                 // Result Display
                                 _buildAnimatedSection(
@@ -317,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           }),
           _buildDrawerItem(Icons.settings, 'Settings', () {
             Navigator.pop(context);
-            // TODO: Navigate to settings screen
+            Navigator.pushNamed(context, '/settings');
           }),
           const Divider(),
           _buildDrawerItem(
@@ -486,7 +480,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         Expanded(
           child: _buildStatCard(
             icon: Icons.people,
-            title: 'Users Screened',
+            title: 'Users',
             value: '10,000+',
             color: Colors.blue,
           ),
@@ -496,7 +490,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: _buildStatCard(
             icon: Icons.location_on,
             title: 'Regions',
-            value: '4 Countries',
+            value: '16 States',
             color: Colors.green,
           ),
         ),
@@ -504,7 +498,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         Expanded(
           child: _buildStatCard(
             icon: Icons.psychology,
-            title: 'AI Accuracy',
+            title: 'Accuracy',
             value: '95%',
             color: Colors.purple,
           ),
@@ -568,9 +562,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         provider.bleeding ||
         provider.headache ||
         provider.vomiting;
-    final hasEnvironmentalData =
-        provider.humidity != AppConstants.defaultHumidity ||
-        provider.temperature != AppConstants.defaultTemperature;
 
     return Container(
       padding: const EdgeInsets.all(AppConstants.defaultPadding),
@@ -602,9 +593,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             children: [
               _buildStep(1, 'Report\nSymptoms', hasSymptoms),
               _buildStepConnector(hasSymptoms),
-              _buildStep(2, 'Environmental\nData', hasEnvironmentalData),
-              _buildStepConnector(hasEnvironmentalData),
-              _buildStep(3, 'Get\nAssessment', provider.result != null),
+              _buildStep(2, 'Get\nAssessment', provider.result != null),
             ],
           ),
         ],
@@ -718,22 +707,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   symptomsCount > 0 ? AppConstants.warningColor : Colors.grey,
                 ),
               ),
-              Container(width: 1, height: 40, color: Colors.grey[300]),
-              Expanded(
-                child: _buildSummaryItem(
-                  'Temperature',
-                  '${provider.temperature.toStringAsFixed(1)}°C',
-                  _getTemperatureColor(provider.temperature),
-                ),
-              ),
-              Container(width: 1, height: 40, color: Colors.grey[300]),
-              Expanded(
-                child: _buildSummaryItem(
-                  'Humidity',
-                  '${provider.humidity.toStringAsFixed(0)}%',
-                  _getHumidityColor(provider.humidity),
-                ),
-              ),
             ],
           ),
         ],
@@ -757,32 +730,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Color _getTemperatureColor(double temp) {
-    if (temp >= AppConstants.criticalTempThreshold)
-      return AppConstants.criticalRiskColor;
-    if (temp >= AppConstants.feverThreshold) return AppConstants.highRiskColor;
-    if (temp < 35.0) return AppConstants.moderateRiskColor;
-    return AppConstants.lowRiskColor;
-  }
-
-  Color _getHumidityColor(double humidity) {
-    if (humidity > 80 || humidity < 20) return AppConstants.warningColor;
-    if (humidity >= AppConstants.optimalHumidityMin &&
-        humidity <= AppConstants.optimalHumidityMax) {
-      return AppConstants.lowRiskColor;
-    }
-    return AppConstants.primaryColor;
-  }
-
   Widget _buildAnimatedSection({required Widget child, required int delay}) {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
       duration: Duration(milliseconds: 800 + delay),
       curve: Curves.easeOutBack,
       builder: (context, value, child) {
+        // Clamp the value to ensure it stays within valid range
+        final clampedValue = value.clamp(0.0, 1.0);
         return Transform.translate(
-          offset: Offset(0, 30 * (1 - value)),
-          child: Opacity(opacity: value, child: child),
+          offset: Offset(0, 30 * (1 - clampedValue)),
+          child: Opacity(opacity: clampedValue, child: child),
         );
       },
       child: child,
@@ -804,6 +762,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       provider.headache,
       provider.vomiting,
     ].where((s) => s).length;
+    //log the data entered by the user on submit
+    //first form SymptomData
+    final symptomData = SymptomData(
+      fever: provider.fever ? 1 : 0,
+      bleeding: provider.bleeding ? 1 : 0,
+      headache: provider.headache ? 1 : 0,
+      vomiting: provider.vomiting ? 1 : 0,
+      temperature: provider.temperature.toDouble(),
+    );
+
+    //log the symptom data
+    print(symptomData.toJson());
 
     return AnimatedContainer(
       duration: AppConstants.shortAnimation,
@@ -1008,13 +978,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
                 const SizedBox(height: 16),
                 _buildHelpStep(
-                  '2. Environmental Data',
-                  'Adjust temperature and humidity sliders based on your current environment.',
-                  Icons.thermostat,
-                ),
-                const SizedBox(height: 16),
-                _buildHelpStep(
-                  '3. Get Assessment',
+                  '2. Get Assessment',
                   'Click the assessment button to receive an AI-powered risk evaluation.',
                   Icons.psychology,
                 ),
