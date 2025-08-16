@@ -1,0 +1,14 @@
+### Test Statistics API - Lagos 2024
+GET https://ai4lassa-api.onrender.com/history?state=Lagos&start_year=2024&end_year=2024&start_month=1&end_month=12
+
+### Test Statistics API - Abuja 2023-2024
+GET https://ai4lassa-api.onrender.com/history?state=Abuja&start_year=2023&end_year=2024&start_month=1&end_month=12
+
+### Test Statistics API - Kano 2024 (First 6 months)
+GET https://ai4lassa-api.onrender.com/history?state=Kano&start_year=2024&end_year=2024&start_month=1&end_month=6
+
+### Test Statistics API - Rivers 2024 (Last 6 months)
+GET https://ai4lassa-api.onrender.com/history?state=Rivers&start_year=2024&end_year=2024&start_month=7&end_month=12
+
+### Test Statistics API - All States 2024
+GET https://ai4lassa-api.onrender.com/history?start_year=2024&end_year=2024&start_month=1&end_month=12 

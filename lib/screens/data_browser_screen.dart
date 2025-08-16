@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/statistics_data.dart';
-import '../services/api_service.dart';
+import '../services/data_browsing_provider.dart';
+import '../utils/constants.dart';
+import 'statistics_results_screen.dart';
 
 class DataBrowserScreen extends StatefulWidget {
   const DataBrowserScreen({Key? key}) : super(key: key);
@@ -10,167 +13,351 @@ class DataBrowserScreen extends StatefulWidget {
 }
 
 class _DataBrowserScreenState extends State<DataBrowserScreen> {
-  final List<String> _states = ['Lagos', 'Abuja', 'Kano', 'Rivers'];
-  final List<String> _intervals = ['month', 'week'];
+  // Controllers for text fields
+  final TextEditingController _startYearController = TextEditingController();
+  final TextEditingController _endYearController = TextEditingController();
+  final TextEditingController _startMonthController = TextEditingController();
+  final TextEditingController _endMonthController = TextEditingController();
 
-  String? _selectedState;
-  String? _selectedInterval = 'month';
-  DateTime? _startDate;
-  DateTime? _endDate;
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controllers with default values
+    final provider = Provider.of<DataBrowsingProvider>(context, listen: false);
+    final defaultYearRange = provider.defaultYearRange;
+    final defaultMonthRange = provider.defaultMonthRange;
 
-  bool _loading = false;
-  String? _error;
-  List<StatisticsData> _results = [];
+    _startYearController.text = defaultYearRange['startYear'].toString();
+    _endYearController.text = defaultYearRange['endYear'].toString();
+    _startMonthController.text = defaultMonthRange['startMonth'].toString();
+    _endMonthController.text = defaultMonthRange['endMonth'].toString();
+  }
 
-  Future<void> _pickDate({required bool isStart}) async {
-    final now = DateTime.now();
-    final initial = isStart ? (_startDate ?? now) : (_endDate ?? now);
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: initial,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(now.year + 1),
-    );
-    if (picked != null) {
-      setState(() {
-        if (isStart) {
-          _startDate = picked;
-        } else {
-          _endDate = picked;
-        }
-      });
-    }
+  @override
+  void dispose() {
+    _startYearController.dispose();
+    _endYearController.dispose();
+    _startMonthController.dispose();
+    _endMonthController.dispose();
+    super.dispose();
   }
 
   Future<void> _search() async {
-    setState(() {
-      _loading = true;
-      _error = null;
-      _results = [];
-    });
-    try {
-      final results = await ApiService.fetchStatisticsData(
-        state: _selectedState,
-        startDate: _startDate != null
-            ? _startDate!.toIso8601String().split('T').first
-            : null,
-        endDate: _endDate != null
-            ? _endDate!.toIso8601String().split('T').first
-            : null,
-        interval: _selectedInterval,
+    final provider = Provider.of<DataBrowsingProvider>(context, listen: false);
+
+    // Parse and validate year inputs
+    final startYear = int.tryParse(_startYearController.text);
+    final endYear = int.tryParse(_endYearController.text);
+
+    if (startYear == null || endYear == null) {
+      // We'll let the provider handle validation
+      return;
+    }
+
+    // Parse and validate month inputs
+    final startMonth = int.tryParse(_startMonthController.text);
+    final endMonth = int.tryParse(_endMonthController.text);
+
+    if (startMonth == null || endMonth == null) {
+      // We'll let the provider handle validation
+      return;
+    }
+
+    // Fetch data using provider
+    await provider.fetchStatisticsData(
+      state: provider.selectedState ?? '',
+      startYear: startYear,
+      endYear: endYear,
+      startMonth: startMonth,
+      endMonth: endMonth,
+    );
+
+    // If successful and no error, navigate to results
+    if (provider.error == null && provider.statisticsData.isNotEmpty) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => StatisticsResultsScreen(
+            results: provider.statisticsData,
+            selectedState: provider.selectedState!,
+            startYear: startYear,
+            endYear: endYear,
+            startMonth: startMonth,
+            endMonth: endMonth,
+          ),
+        ),
       );
-      setState(() {
-        _results = results;
-      });
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-      });
-    } finally {
-      setState(() {
-        _loading = false;
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Browse Statistics')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedState,
-                    hint: const Text('Select State'),
-                    items: _states
-                        .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                        .toList(),
-                    onChanged: (val) => setState(() => _selectedState = val),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedInterval,
-                    hint: const Text('Interval'),
-                    items: _intervals
-                        .map((i) => DropdownMenuItem(value: i, child: Text(i)))
-                        .toList(),
-                    onChanged: (val) => setState(() => _selectedInterval = val),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => _pickDate(isStart: true),
-                    child: Text(
-                      _startDate == null
-                          ? 'Start Date'
-                          : _startDate!.toLocal().toString().split(' ')[0],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => _pickDate(isStart: false),
-                    child: Text(
-                      _endDate == null
-                          ? 'End Date'
-                          : _endDate!.toLocal().toString().split(' ')[0],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _loading ? null : _search,
-                child: _loading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Search'),
+    return Consumer<DataBrowsingProvider>(
+      builder: (context, provider, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'Browse Statistics',
+              style: AppConstants.getInterFont(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 16),
-            if (_error != null)
-              Text(_error!, style: const TextStyle(color: Colors.red)),
-            if (!_loading && _results.isNotEmpty)
-              Expanded(
-                child: ListView.separated(
-                  itemCount: _results.length,
-                  separatorBuilder: (_, __) => const Divider(),
-                  itemBuilder: (context, idx) {
-                    final stat = _results[idx];
-                    return ListTile(
-                      title: Text('${stat.state} - ${stat.month}'),
-                      subtitle: Text(
-                        'Cases: ${stat.cases}, Deaths: ${stat.deaths}, Recoveries: ${stat.recoveries}',
+            backgroundColor: AppConstants.primaryColor,
+            foregroundColor: Colors.white,
+          ),
+          body: Padding(
+            padding: EdgeInsets.all(AppConstants.getResponsivePadding(context)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // State Selection
+                Text(
+                  'Select State',
+                  style: AppConstants.getInterFont(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(
+                  height: AppConstants.getResponsiveSmallPadding(context),
+                ),
+                DropdownButtonFormField<String>(
+                  value: provider.selectedState,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.getResponsiveButtonRadius(context),
                       ),
-                    );
-                  },
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: AppConstants.getResponsivePadding(context),
+                      vertical: AppConstants.getResponsiveSmallPadding(context),
+                    ),
+                  ),
+                  hint: Text(
+                    'Choose a state',
+                    style: AppConstants.getInterFont(),
+                  ),
+                  items: provider.availableStates
+                      .map(
+                        (s) => DropdownMenuItem(
+                          value: s,
+                          child: Text(s, style: AppConstants.getInterFont()),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (val) => provider.setSelectedState(val),
                 ),
-              ),
-            if (!_loading && _results.isEmpty && _error == null)
-              const Text('No data to display.'),
-          ],
-        ),
-      ),
+                SizedBox(
+                  height: AppConstants.getResponsiveLargePadding(context),
+                ),
+
+                // Year Range
+                Text(
+                  'Year Range',
+                  style: AppConstants.getInterFont(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(
+                  height: AppConstants.getResponsiveSmallPadding(context),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _startYearController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppConstants.getResponsiveButtonRadius(context),
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: AppConstants.getResponsivePadding(
+                              context,
+                            ),
+                            vertical: AppConstants.getResponsiveSmallPadding(
+                              context,
+                            ),
+                          ),
+                          labelText: 'Start Year',
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: AppConstants.getResponsiveSmallPadding(context),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: _endYearController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppConstants.getResponsiveButtonRadius(context),
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: AppConstants.getResponsivePadding(
+                              context,
+                            ),
+                            vertical: AppConstants.getResponsiveSmallPadding(
+                              context,
+                            ),
+                          ),
+                          labelText: 'End Year',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: AppConstants.getResponsiveLargePadding(context),
+                ),
+
+                // Month Range
+                Text(
+                  'Month Range',
+                  style: AppConstants.getInterFont(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(
+                  height: AppConstants.getResponsiveSmallPadding(context),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _startMonthController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppConstants.getResponsiveButtonRadius(context),
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: AppConstants.getResponsivePadding(
+                              context,
+                            ),
+                            vertical: AppConstants.getResponsiveSmallPadding(
+                              context,
+                            ),
+                          ),
+                          labelText: 'Start Month (1-12)',
+                          helperText: 'Enter 1-12',
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: AppConstants.getResponsiveSmallPadding(context),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: _endMonthController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppConstants.getResponsiveButtonRadius(context),
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: AppConstants.getResponsivePadding(
+                              context,
+                            ),
+                            vertical: AppConstants.getResponsiveSmallPadding(
+                              context,
+                            ),
+                          ),
+                          labelText: 'End Month (1-12)',
+                          helperText: 'Enter 1-12',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: AppConstants.getResponsiveLargePadding(context),
+                ),
+
+                // Search Button
+                SizedBox(
+                  width: double.infinity,
+                  height: AppConstants.getResponsiveButtonHeight(context),
+                  child: ElevatedButton(
+                    onPressed: provider.isLoading ? null : _search,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppConstants.primaryColor,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppConstants.getResponsiveButtonRadius(context),
+                        ),
+                      ),
+                    ),
+                    child: provider.isLoading
+                        ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                        : Text(
+                            'Search Statistics',
+                            style: AppConstants.getInterFont(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
+                ),
+                SizedBox(
+                  height: AppConstants.getResponsiveLargePadding(context),
+                ),
+
+                // Error Display
+                if (provider.error != null)
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(
+                      AppConstants.getResponsivePadding(context),
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppConstants.errorColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.getResponsiveButtonRadius(context),
+                      ),
+                      border: Border.all(
+                        color: AppConstants.errorColor.withOpacity(0.3),
+                      ),
+                    ),
+                    child: Text(
+                      provider.error!,
+                      style: AppConstants.getInterFont(
+                        color: AppConstants.errorColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+
+                // Spacer to push content to top
+                Expanded(child: SizedBox()),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

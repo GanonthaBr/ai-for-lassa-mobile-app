@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
 import 'utils/constants.dart';
 import 'services/symptom_analysis_provider.dart';
+import 'services/data_browsing_provider.dart';
 import 'widgets/splash_screen.dart';
 
 void main() {
@@ -32,8 +33,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => SymptomAnalysisProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SymptomAnalysisProvider()),
+        ChangeNotifierProvider(create: (_) => DataBrowsingProvider()),
+      ],
       child: MaterialApp(
         title: AppConstants.appName,
         theme: ThemeData(

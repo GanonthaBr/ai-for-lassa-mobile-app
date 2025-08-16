@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../models/symptom_data.dart';
 import '../models/prediction_result.dart';
@@ -13,7 +14,10 @@ class ApiService {
 
   // TESTING: NGrok tunnel for development testing only
   static const String _testingNgrokUrl =
-      'https://b33ed8f66dfe.ngrok-free.app'; // Updated with actual NGrok URL
+      'https://ai4lassa-api.onrender.com'; // Updated with actual NGrok URL
+
+  // STATISTICS API: Separate URL for statistics data
+  static const String _statisticsApiUrl = 'https://ai4lassa-api.onrender.com';
 
   static String get _baseUrl =>
       _useNgrokForTesting ? _testingNgrokUrl : _productionIp;
@@ -74,42 +78,25 @@ class ApiService {
   // Fetch statistics data with optional filters
   static Future<List<StatisticsData>> fetchStatisticsData({
     String? state,
-    String? startDate,
-    String? endDate,
-    String? interval,
+    int? startYear,
+    int? endYear,
+    int? startMonth,
+    int? endMonth,
   }) async {
-    final Map<String, String> queryParams = {};
-    if (state != null && state.isNotEmpty) queryParams['state'] = state;
-    if (startDate != null && startDate.isNotEmpty) {
-      queryParams['start_date'] = startDate;
-    }
-    if (endDate != null && endDate.isNotEmpty) {
-      queryParams['end_date'] = endDate;
-    }
-    if (interval != null && interval.isNotEmpty) {
-      queryParams['interval'] = interval;
-    }
-
-    final uri = Uri.parse(
-      '$_baseUrl/statistics',
-    ).replace(queryParameters: queryParams);
-
     try {
-      final response = await http
-          .get(uri, headers: {'Content-Type': 'application/json'})
-          .timeout(const Duration(seconds: 30));
+      final uri = Uri.parse(
+        '$_statisticsApiUrl/history?state=$state&start_year=$startYear&end_year=$endYear&start_month=$startMonth&end_month=$endMonth',
+      );
+
+      final response = await http.get(uri).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
-        final List<dynamic> jsonList = jsonDecode(response.body);
-        return jsonList.map((json) => StatisticsData.fromJson(json)).toList();
-      } else if (response.statusCode == 404) {
-        throw ApiException('Data service temporarily unavailable');
-      } else if (response.statusCode >= 500) {
-        throw ApiException('Data server temporarily unavailable');
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((json) => StatisticsData.fromJson(json)).toList();
       } else {
-        throw ApiException('Data service temporarily unavailable');
+        throw ApiException('Service temporarily unavailable');
       }
-    } on http.ClientException {
+    } on SocketException {
       throw ApiException('Network connection error');
     } on FormatException {
       throw ApiException('Invalid response format');

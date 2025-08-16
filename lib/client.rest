@@ -1,5 +1,6 @@
 ### Test Prediction API Endpoint - Normal Case
-POST https://b33ed8f66dfe.ngrok-free.app/predict
+GET https://ai4lassa-api.onrender.com/history?state=Lagos&start_year=2023&end_year=2024&start_month=1&end_month=12
+
 Content-Type: application/json
 
 {
@@ -9,8 +10,6 @@ Content-Type: application/json
   "vomiting": 1,
   "temperature": 48.8
 }
-
-
 
 ###
 

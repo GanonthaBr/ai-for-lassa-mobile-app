@@ -48,6 +48,9 @@ dependencies:
   provider: ^6.0.5
   lottie: ^2.7.0
 
+  # Google Fonts for professional typography
+  google_fonts: ^6.1.0
+
   # Local storage for settings
   shared_preferences: ^2.2.2
 

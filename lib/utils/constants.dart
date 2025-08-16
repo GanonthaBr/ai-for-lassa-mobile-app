@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppConstants {
   // App Information
   static const String appName = 'AI4Lassa - Symptom Reporter';
   static const String appVersion = '1.0.0';
 
+  // Typography - Medical App Font Family
+  static TextStyle getInterFont({
+    double? fontSize,
+    FontWeight? fontWeight,
+    Color? color,
+  }) {
+    return GoogleFonts.inter(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+    );
+  }
+
   // API Configuration
   static const String productionIp = 'http://192.168.1.100:5000';
-  static const String testingNgrokUrl = 'https://your-ngrok-url.ngrok.io';
+  static const String testingNgrokUrl = 'https://ai4lassa-api.onrender.com';
   static const bool useNgrokForTesting = true;
 
   // Environmental Data Ranges
@@ -87,7 +101,7 @@ class AppConstants {
     if (screenWidth < 900) fontSize = 28.0;
     if (screenWidth >= 900) fontSize = 32.0;
 
-    return TextStyle(
+    return getInterFont(
       fontSize: fontSize,
       fontWeight: FontWeight.bold,
       color: Colors.black87,
@@ -115,7 +129,7 @@ class AppConstants {
     if (screenWidth < 900) fontSize = 18.0;
     if (screenWidth >= 900) fontSize = 20.0;
 
-    return TextStyle(fontSize: fontSize, color: Colors.black87);
+    return getInterFont(fontSize: fontSize, color: Colors.black87);
   }
 
   static TextStyle getResponsiveCaptionStyle(BuildContext context) {
@@ -125,7 +139,7 @@ class AppConstants {
     if (screenWidth < 900) fontSize = 16.0;
     if (screenWidth >= 900) fontSize = 18.0;
 
-    return TextStyle(fontSize: fontSize, color: Colors.black54);
+    return getInterFont(fontSize: fontSize, color: Colors.black54);
   }
 
   // Legacy static constants for backward compatibility
@@ -139,33 +153,29 @@ class AppConstants {
   static const double sliderThumbRadius = 12.0;
 
   // Legacy text styles for backward compatibility
-  static const TextStyle titleStyle = TextStyle(
+  static TextStyle get titleStyle => getInterFont(
     fontSize: 28,
     fontWeight: FontWeight.bold,
     color: Colors.black87,
   );
 
-  static const TextStyle subtitleStyle = TextStyle(
+  static TextStyle get subtitleStyle => getInterFont(
     fontSize: 22,
     fontWeight: FontWeight.w600,
     color: Colors.black54,
   );
 
-  static const TextStyle bodyStyle = TextStyle(
-    fontSize: 18,
-    color: Colors.black87,
-  );
+  static TextStyle get bodyStyle =>
+      getInterFont(fontSize: 14, color: Colors.black87);
 
-  static const TextStyle bodyBoldStyle = TextStyle(
+  static TextStyle get bodyBoldStyle => getInterFont(
     fontSize: 18,
     fontWeight: FontWeight.w600,
     color: Colors.black87,
   );
 
-  static const TextStyle captionStyle = TextStyle(
-    fontSize: 16,
-    color: Colors.black54,
-  );
+  static TextStyle get captionStyle =>
+      getInterFont(fontSize: 12, color: Colors.black54);
 
   // Colors
   static const Color primaryColor = Color(0xFF4CAF50);
