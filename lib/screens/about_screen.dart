@@ -45,10 +45,46 @@ class AboutScreen extends StatelessWidget {
               icon: Icons.psychology,
               color: AppConstants.primaryColor,
               content: [
-                'AI4Lassa leverages artificial intelligence to assist in early detection and risk assessment of Lassa fever.',
-                'Our system analyzes symptoms and environmental factors to provide preliminary risk assessments.',
-                'The app serves as a screening tool to help healthcare workers and individuals identify potential cases.',
-                'This technology aims to improve surveillance and early intervention in Lassa fever endemic regions.',
+                'The Development of an AI solution User Application to Raise Early Alarm to Improve Urban Health awareness, preparedness and Quick Response to Lassa Fever Outbreaks Project (AI4Lassa) is a project funded by the Tertiary Education Trust Fund (TETFUND) under the National Research Fund (NRF) in 2024.',
+                'AI4Lassa is a pioneering initiative developed to address the persistent challenge of Lassa fever outbreaks in Nigeria through the power of artificial intelligence (AI). Our solution focuses on enhancing early detection capabilities, enabling rapid response, and fostering community health awareness. With a targeted approach, AI4Lassa seeks to revolutionize Nigeria’s healthcare infrastructure by empowering public health stakeholders and communities to respond more effectively to health crises. This project stands as a significant public health milestone and invites collaboration and support to ensure sustainable and successful implementation.',
+                '\nOur Vision',
+                'AI4Lassa envisions a future where Lassa fever and similar outbreaks can be detected and controlled promptly, reducing their socio-economic impact and contributing to a healthier and safer Nigeria and West Africa.',
+                '\nObjectives',
+                'Early Detection: Develop an AI-driven application capable of identifying early signs of Lassa fever outbreaks by analyzing real-time data and accurately localizing affected areas.',
+                'Stakeholder Alerts: Implement an automated alert system to notify public health authorities, providing detailed and timely information for swift intervention.',
+                'Outbreak Monitoring and Recommendations: Continuously monitor outbreak progression and advise on control measures, including isolation and treatment protocols.',
+                'Public Awareness: Offer guidance to the public on preventive measures, emphasizing personal hygiene and food safety.',
+                'Resource Allocation: Facilitate the efficient distribution of medical supplies and personnel to affected regions, ensuring swift and organized response.',
+                '\nResearch Framework',
+                'Our research is designed to answer key questions in the application of AI for health crisis management:',
+                'How can AI identify early warning signs of Lassa fever outbreaks?',
+                'What data sources are essential for early detection?',
+                'Which machine learning and natural language processing techniques are best suited for outbreak prediction?',
+                'How can AI4Lassa be optimized for usability by stakeholders?',
+                'What ethical and legal considerations should be prioritized?',
+                'How can potential limitations of AI4Lassa be effectively mitigated?',
+                '\nResearch Outputs and Outcomes',
+                'AI4Lassa is dedicated to advancing AI-based public health initiatives with the following expected outcomes:',
+                'Enhanced collaboration with governmental and research institutions to establish impactful policies.',
+                'Development of a comprehensive application connecting public sector institutions across Nigeria.',
+                'Establishment of state-of-the-art AI laboratories at FUTMinna to operate as data hubs.',
+                'Ensured access to clean, reliable data from verified sources, supporting data integrity and accessibility.',
+                'A dedicated website enabling seamless data access and inter-university data sharing.',
+                'Creation of mentoring opportunities within AI disciplines for Nigerian students.',
+                'Promotion of synergy between government, industry, and academia through collaborative programs.',
+                'Encouragement of stakeholder engagement and data center ownership.',
+                'Strengthening Nigeria’s national development through resource sharing and alliance-building.',
+                '\nProject Impact',
+                'Beyond enhancing response times, AI4Lassa has the potential to reshape several key areas:',
+                'Cybersecurity: Secure and accurate data safeguards the health sector from potential cyber vulnerabilities.',
+                'Economic Development: Effective resource allocation ensures cost efficiency, enhancing overall productivity.',
+                'Health Access and SDG Alignment: Facilitates equitable health responses, especially in underserved regions, contributing to Sustainable Development Goal 3 (Good Health and Well-Being).',
+                'Industrial Growth and Job Creation: A healthy workforce is fundamental to economic stability and growth.',
+                'Educational Development: The AI4Lassa framework supports research and education on Lassa fever, providing invaluable resources for academic and community awareness.',
+                'In collaboration with the Nigerian health sector, public institutions, academic entities, and other stakeholders, AI4Lassa is committed to developing reliable, efficient, and responsive systems for epidemic alerts and intervention. Through these efforts, we aim to significantly enhance Nigeria’s public health resilience, enabling a proactive and well-prepared approach to epidemic management.',
+                '\nOur Team',
+                'Our team is made up of dedicated researchers, developers, and public health experts from the Federal University of Technology Minna (FUTMinna) and partner institutions. Together, we bring diverse expertise in artificial intelligence, epidemiology, software development, and public health policy to tackle the challenges of Lassa fever surveillance and control.',
+                'Learn more: https://ai4lassa.vercel.app/about',
               ],
             ),
 
@@ -207,29 +243,32 @@ class AboutScreen extends StatelessWidget {
   Widget _buildFeaturesSection() {
     final features = [
       {
-        'icon': Icons.assignment_turned_in,
-        'title': 'Symptom Reporting',
-        'desc': 'Quick and comprehensive symptom assessment',
-      },
-      {
-        'icon': Icons.thermostat,
-        'title': 'Environmental Data',
-        'desc': 'Temperature and humidity monitoring',
-      },
-      {
         'icon': Icons.analytics,
         'title': 'AI Risk Assessment',
         'desc': 'Machine learning-powered risk evaluation',
       },
       {
-        'icon': Icons.bar_chart,
-        'title': 'Data Insights',
-        'desc': 'Statistical analysis and trends',
+        'icon': Icons.timeline,
+        'title': 'Outbreak Forecasting',
+        'desc':
+            'Our advanced algorithms predict potential LASSA fever outbreaks based on real-time data',
+      },
+      {
+        'icon': Icons.report,
+        'title': 'Case Reporting',
+        'desc':
+            'Suspect a case? Easily report it to health officials through our secure platform. Q',
+      },
+      {
+        'icon': Icons.notifications_active,
+        'title': 'Real-time Alerts',
+        'desc':
+            'Receive immediate alerts on outbreaks in your area to stay safe and informed',
       },
     ];
 
     return Container(
-      padding: const EdgeInsets.all(AppConstants.defaultPadding),
+      padding: const EdgeInsets.all(AppConstants.smallPadding),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppConstants.buttonRadius),
@@ -278,7 +317,7 @@ class AboutScreen extends StatelessWidget {
                     Icon(
                       feature['icon'] as IconData,
                       color: AppConstants.primaryColor,
-                      size: 25,
+                      size: 16,
                     ),
                     const SizedBox(height: AppConstants.smallPadding),
                     Text(
@@ -463,6 +502,26 @@ class AboutScreen extends StatelessWidget {
           Text(
             'For technical support or collaboration inquiries, please use the Contact section.',
             style: AppConstants.captionStyle,
+          ),
+          //our website
+          Row(
+            children: [
+              Text(
+                'Visit our website: ',
+                style: AppConstants.bodyStyle,
+                textAlign: TextAlign.justify,
+              ),
+              GestureDetector(
+                onTap: () => _launchUrl('https://ai4lassa.vercel.app/'),
+                child: Text(
+                  'www.ai4lassa.app',
+                  style: AppConstants.captionStyle.copyWith(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

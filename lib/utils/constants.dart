@@ -175,7 +175,7 @@ class AppConstants {
   );
 
   static TextStyle get captionStyle =>
-      getInterFont(fontSize: 12, color: Colors.black54);
+      getInterFont(fontSize: 10, color: Colors.black54);
 
   // Colors
   static const Color primaryColor = Color(0xFF4CAF50);

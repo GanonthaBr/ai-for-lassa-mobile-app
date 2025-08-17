@@ -512,7 +512,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: _buildStatCard(
             icon: Icons.location_on,
             title: 'Regions',
-            value: '16 States',
+            value: '36 States',
             color: Colors.green,
           ),
         ),
